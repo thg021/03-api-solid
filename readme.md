@@ -200,3 +200,74 @@ Este passo é apenas para facilitar os imports no typescript. No `tsconfig.json`
 ```
 
 Ou seja. Os meus paths vao começar com o `@`.
+
+---
+
+# Fundamentos do Prisma ORM
+
+## Prisma: Configurando extensão no VSCode
+
+1. Instale a extensão [Prisma](https://marketplace.visualstudio.com/items?itemName=Prisma.prisma) no seu Visual Studio Code.
+2. Abra a Paleta de Comandos:
+    1. Se estiver no Windows ou Linux: `CTRL + SHIFT + P`
+    2. Se estiver no macOS: `CMD + SHIFT + P`
+3. Abra as configurações em JSON buscando por: 
+    1. Se o seu VSCode estiver em português: `Abrir as Configurações do usuário (JSON)`
+    2. Se o seu VSCode estiver em inglês: `Open User Settings (JSON)`
+4. Adicione dentro do JSON o código abaixo:
+
+```json
+"[prisma]": {
+  "editor.defaultFormatter": "Prisma.prisma",
+  "editor.formatOnSave": true
+},
+```
+
+[ ] - instalar o `prisma`  em desenvolvimento
+este é apenas um interface de linha de comando 
+agora ele valida iniciar e criar `prisma/schema.prisma`
+
+```bash 
+npx prisma init
+```
+
+```prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id    String @id @default(uuid())
+  name  String
+  email String @unique
+  @@map("users") 
+}
+```
+
+**@@map vai trocar o nome da tabela.**
+
+[ ] - instalar o `@prisma/client`
+[ ] - adicionar no `src/app.ts` as configurações do prisma apenas para validação
+
+```typescript 
+import fastify from 'fastify'
+import { PrismaClient } from '@prisma/client'
+
+export const app = fastify()
+
+const prisma = new PrismaClient()
+
+prisma.user.create({
+  data: {
+    name: 'Diego Fernandes',
+    email: 'diego@rocketsaeet.com.br',
+  },
+})
+
+// ORM - Object Relational Mapper
+```
