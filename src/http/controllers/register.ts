@@ -22,7 +22,7 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
       return reply.status(409).send({ message: e.message })
     }
 
-    return reply.status(500).send()
+    throw e
   }
 
   return reply.status(201).send()
