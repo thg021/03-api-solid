@@ -12,11 +12,11 @@ describe('Validate Check-in Use Case', () => {
     checkInsRepository = new InMemoryCheckInsRepository()
     sut = new ValidateCheckInUseCase(checkInsRepository)
 
-    // vi.useFakeTimers()
+    vi.useFakeTimers()
   })
 
   afterEach(() => {
-    // vi.useRealTimers()
+    vi.useRealTimers()
   })
 
   it('should be able to validate the check-in', async () => {
