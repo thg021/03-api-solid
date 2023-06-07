@@ -9,11 +9,17 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 function generateDatabaseURL(schema: string) {
-  if (!process.env.DATABASE_URL) {
-    throw new Error('Please provide a DATABASE_URL environment variable.')
-  }
+  const {
+    DATABASE_HOST,
+    DATABASE_USER,
+    DATABASE_PASS,
+    DATABASE_PORT,
+    DATABASE_NAME,
+  } = process.env
 
-  const url = new URL(process.env.DATABASE_URL)
+  const url = new URL(
+    `postgresql://${DATABASE_USER}:${DATABASE_PASS}@${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}`,
+  )
 
   url.searchParams.set('schema', schema)
 
@@ -25,10 +31,13 @@ export default <Environment>{
   async setup() {
     const schema = randomUUID()
     const databaseURL = generateDatabaseURL(schema)
-
     process.env.DATABASE_URL = databaseURL
-
-    execSync('npx prisma migrate deploy')
+    try {
+      execSync('npx prisma migrate deploy')
+    } catch {
+      console.warn('⚠️ O comando npx prisma migrate será executado novamente.')
+      execSync('npx prisma migrate deploy')
+    }
 
     return {
       async teardown() {
